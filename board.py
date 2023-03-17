@@ -1,9 +1,15 @@
 import random
-from array import *
 
 
 class Board:
     def __init__(self):
+        self.state = None
+        self.current_player = None
+        self.player_2 = None
+        self.player_1 = None
+        self.board = None
+        self.size = None
+        self.winning_grids = None
         self.init_board()
 
     def init_board(self):
@@ -15,7 +21,8 @@ class Board:
         self.player_1 = 'x'
         self.player_2 = 'o'
         self.current_player = random.choice([self.player_1, self.player_2])
-        self.state = 'IN_PROGRESS' #states available: IN_PROGRESS, END
+        self.state = 'IN_PROGRESS'  # states available: IN_PROGRESS, END
+        self.winning_grids = []
 
     def debug_print(self):
         for i in range(self.size):
@@ -41,7 +48,12 @@ class Board:
                     current_player_wins_vertical = False
                 if self.board[j][i] != self.current_player:
                     current_player_wins_horizontal = False
-            if current_player_wins_vertical or current_player_wins_horizontal:
+            if current_player_wins_vertical:
+                self.winning_grids = [(i, 0), (i, 1), (i, 2)]
+                self.state = 'END'
+                return True
+            elif current_player_wins_horizontal:
+                self.winning_grids = [(0, i), (1, i), (2, i)]
                 self.state = 'END'
                 return True
 
@@ -52,10 +64,15 @@ class Board:
                 current_player_wins_left = False
             if self.board[i][self.size - 1 - i] != self.current_player:
                 current_player_wins_right = False
-        if current_player_wins_left or current_player_wins_right:
+        if current_player_wins_left:
+            self.winning_grids = [(0, 0), (1, 1), (2, 2)]
             self.state = 'END'
             return True
-
+        elif current_player_wins_right:
+            self.winning_grids = [(0, 2), (1, 1), (2, 0)]
+            self.state = 'END'
+            return True
+        
         # check if draw
         draw = True
         for i in range(self.size):
@@ -73,5 +90,3 @@ class Board:
         else:
             self.current_player = 'x'
         return True
-
-

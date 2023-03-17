@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPalette, QColor
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QVBoxLayout, QAction, QMenuBar, \
     QMessageBox, QLabel
 
@@ -28,7 +28,7 @@ class TicTacToe(QWidget):
             row = []
             for j in range(self.board.size):
                 button = QPushButton(' ', self)
-                button.setFixedSize(100, 100)
+                button.setFixedSize(110, 110)
                 button.clicked.connect(lambda _, i=i, j=j: self.make_move(i, j))
                 font = QFont()
                 font.setPointSize(32)
@@ -46,7 +46,7 @@ class TicTacToe(QWidget):
         self.player_label = QLabel('Ruch gracza: ' + self.board.current_player, self)
         self.player_label.setMargin(0)
         font = QFont()
-        font.setPointSize(32)
+        font.setPointSize(26)
         self.player_label.setFont(font)
         self.player_label.setAlignment(Qt.AlignCenter)
 
@@ -70,7 +70,10 @@ class TicTacToe(QWidget):
         about = QMessageBox()
         about.setWindowTitle("O grze")
         about.setText(
-            "Kółko i krzyżyk to gra, w której dwóch graczy stara się ułożyć swoje symbole (krzyżyki lub kółka) w jednej linii - poziomej, pionowej lub skośnej - na planszy o wymiarach 3x3.")
+            "Kółko i krzyżyk to gra, w której dwóch graczy stara się "
+            "ułożyć swoje symbole (krzyżyki lub kółka) w jednej linii - "
+            "poziomej, pionowej lub skośnej - na planszy o wymiarach 3x3."
+        )
         about.exec_()
 
     def make_move(self, y, x):
@@ -85,13 +88,23 @@ class TicTacToe(QWidget):
             self.player_label.setText("Koniec gry: remis! ")
             self.block_all_grids()
         elif self.board.state == 'END':
+            self.color_grids()
             font = QFont()
-            font.setPointSize(16)
+            font.setPointSize(14)
             self.player_label.setFont(font)
-            self.player_label.setText("Koniec gry: gracz "+self.board.current_player+" wygrał!")
+            self.player_label.setText("Koniec gry: gracz " + self.board.current_player + " wygrał!")
             self.block_all_grids()
         else:
             self.player_label.setText("Ruch gracza: " + self.board.current_player)
+
+    def color_grids(self):
+        palette = QPalette()
+        palette.setColor(QPalette.ButtonText, QColor(255, 0, 0))
+        for grid in self.board.winning_grids:
+            button = self.buttons[grid[0]][grid[1]]
+            button.setPalette(palette)
+            button.setAutoFillBackground(True)
+            button.setStyleSheet("background-color: white")
 
     def block_all_grids(self):
         for row in self.buttons:
@@ -99,13 +112,21 @@ class TicTacToe(QWidget):
                 button.setEnabled(False)
 
     def reset_board(self):
+        palette = QPalette()
+        palette.setColor(QPalette.ButtonText, QColor(0, 0, 0))
         for row in self.buttons:
             for button in row:
+                button.setPalette(palette)
                 button.setText('')
+                button.setStyleSheet('')
+                button.setAutoFillBackground(True)
+                font = QFont()
+                font.setPointSize(26)
                 button.setEnabled(True)
+                button.show()
         self.board = Board()
         font = QFont()
-        font.setPointSize(32)
+        font.setPointSize(26)
         self.player_label.setFont(font)
         self.player_label.setText("Ruch gracza: " + self.board.current_player)
 
