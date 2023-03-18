@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QPalette, QColor
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QVBoxLayout, QAction, QMenuBar, \
     QMessageBox, QLabel
 
@@ -98,11 +98,8 @@ class TicTacToe(QWidget):
             self.player_label.setText("Ruch gracza: " + self.board.current_player)
 
     def color_grids(self):
-        palette = QPalette()
-        palette.setColor(QPalette.ButtonText, QColor(255, 0, 0))
         for grid in self.board.winning_grids:
             button = self.buttons[grid[0]][grid[1]]
-            button.setPalette(palette)
             button.setAutoFillBackground(True)
             button.setStyleSheet("background-color: white")
 
@@ -112,11 +109,8 @@ class TicTacToe(QWidget):
                 button.setEnabled(False)
 
     def reset_board(self):
-        palette = QPalette()
-        palette.setColor(QPalette.ButtonText, QColor(0, 0, 0))
         for row in self.buttons:
             for button in row:
-                button.setPalette(palette)
                 button.setText('')
                 button.setStyleSheet('')
                 button.setAutoFillBackground(True)
